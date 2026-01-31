@@ -1,33 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            Login
-          </CardTitle>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm">Email</label>
-            <Input type="email" placeholder="you@example.com" />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm">Password</label>
-            <Input type="password" placeholder="••••••••" />
-          </div>
-
-          <Button className="w-full">
-            Sign in
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 }
