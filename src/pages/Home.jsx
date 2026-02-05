@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
+
+import CartIcon from "../components/CartIcon";
 
 const products = [
   {
@@ -44,6 +46,7 @@ export default function Home() {
         <h1 className="text-xl font-bold">Lab 2 - Products</h1>
 
         <div className="flex gap-2">
+            <CartIcon />
           <Button asChild variant="secondary">
             <Link to="/login">Login</Link>
           </Button>
