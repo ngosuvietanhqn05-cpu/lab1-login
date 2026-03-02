@@ -43,6 +43,9 @@ export function CartProvider({ children }) {
   function removeFromCart(id) {
     setCart((prev) => prev.filter((item) => item.id !== id));
   }
+function clearCart() {
+  setCart([]);
+}
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce(
@@ -57,6 +60,7 @@ export function CartProvider({ children }) {
         addToCart,
         updateQuantity,
         removeFromCart,
+         clearCart,
         totalItems,
         totalPrice,
       }}

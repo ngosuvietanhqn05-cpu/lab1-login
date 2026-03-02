@@ -1,12 +1,59 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabaseClient";
+
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 
-
 export default function Cart() {
-  const { cart, updateQuantity, removeFromCart, totalPrice } = useCart();
+  const { cart, updateQuantity, removeFromCart, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleCheckout() {
+    setErrorMsg("");
+
+    if (cart.length === 0) return;
+
+    // Nếu chưa login → chuyển sang login
+    if (!user) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
+
+    try {
+      setCheckingOut(true);
+
+      const payload = {
+        user_id: user.id,
+        total_price: totalPrice,
+        items: cart.map((i) => ({
+          product_id: i.id,
+          name: i.name,
+          quantity: i.quantity,
+          price: i.price,
+        })),
+      };
+
+      const { error } = await supabase.from("orders").insert(payload);
+      if (error) throw error;
+
+      clearCart();          // 🔥 clear cart
+      navigate("/orders");  // 🔥 chuyển sang Order History
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setCheckingOut(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
@@ -75,6 +122,17 @@ export default function Cart() {
                 <span className="text-lg font-bold">
                   ${totalPrice.toFixed(2)}
                 </span>
+              </CardContent>
+
+              <CardContent className="p-4 pt-0 flex justify-end items-center gap-4">
+                {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+
+                <Button
+                  onClick={handleCheckout}
+                  disabled={checkingOut || cart.length === 0}
+                >
+                  {checkingOut ? "Processing..." : "Checkout"}
+                </Button>
               </CardContent>
             </Card>
           </>

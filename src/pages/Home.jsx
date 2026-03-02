@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { Button } from "../components/ui/button";
-
 import CartIcon from "../components/CartIcon";
+
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../lib/supabaseClient";
 
 const products = [
   {
@@ -40,19 +42,43 @@ const products = [
 ];
 
 export default function Home() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  async function logout() {
+    await supabase.auth.signOut();
+    navigate("/");
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="mx-auto flex max-w-6xl items-center justify-between p-4">
-        <h1 className="text-xl font-bold">Lab 2 - Products</h1>
+        <h1 className="text-xl font-bold">Lab 4 + 5 - Products</h1>
 
         <div className="flex gap-2">
-            <CartIcon />
-          <Button asChild variant="secondary">
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link to="/register">Register</Link>
-          </Button>
+          <CartIcon />
+
+          {user ? (
+            <>
+              <Button asChild variant="secondary">
+                <Link to="/orders">Orders</Link>
+              </Button>
+
+              <Button variant="destructive" onClick={logout}>
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild variant="secondary">
+                <Link to="/login">Login</Link>
+              </Button>
+
+              <Button asChild>
+                <Link to="/register">Register</Link>
+              </Button>
+            </>
+          )}
         </div>
       </header>
 
