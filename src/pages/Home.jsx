@@ -53,13 +53,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="mx-auto flex max-w-6xl items-center justify-between p-4">
-        <h1 className="text-xl font-bold">Lab 4 + 5 - Products</h1>
+        <h1 className="text-xl font-bold">Lab 6 - Products</h1>
 
         <div className="flex gap-2">
           <CartIcon />
 
           {user ? (
             <>
+              <Button asChild variant="secondary">
+                <Link to="/chat">Chat</Link>
+              </Button>
+
               <Button asChild variant="secondary">
                 <Link to="/orders">Orders</Link>
               </Button>
